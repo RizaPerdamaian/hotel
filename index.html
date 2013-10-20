@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map_canvas { height: 100% }
+    </style>
+	<?include "config.php"?>
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <script type="text/javascript">
+      var map;
+      function initialize() {
+        var mapOptions = {
+          center: new google.maps.LatLng(-0.9152702612123588,100.46086192131042),
+          zoom: 12,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        map = new google.maps.Map(document.getElementById("map_canvas"),
+            mapOptions);
+      }
+    </script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>    
+  </head>
+  <body onload="initialize()">
+    <div id="map_canvas" style="width:100%; height:100%"></div>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $.getJSON("json.php", function(json1) {
+          $.each(json1, function(key, data) {
+            var latLng = new google.maps.LatLng(data.hotel_latitude, data.hotel_longitude); 
+            // Creating a marker and putting it on the map
+		var infowindow = new google.maps.InfoWindow({
+            	content: data.nama
+            });
+            var marker = new google.maps.Marker({
+                position: latLng,
+                title: data.title,
+                Animation:google.maps.Animation.BOUNCE,
+                //icon: 'document.png'
+                
+            });
+            marker.setMap(map);
+		google.maps.event.addListener(marker,'click',function(){
+		infowindow.open(map,marker);
+		});
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
